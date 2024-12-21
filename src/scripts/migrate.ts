@@ -20,6 +20,15 @@ async function migrateFeeds() {
   const sqliteDb = new Database("bot-rss.sqlite");
 
   try {
+    // Créer d'abord la table feeds
+    sqliteDb.run(`
+      CREATE TABLE IF NOT EXISTS feeds (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        link TEXT NOT NULL,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+
     await client.connect();
     logger.info("Connected to MongoDB successfully");
 
@@ -32,25 +41,23 @@ async function migrateFeeds() {
 
     // Get all feeds from MongoDB
     const feeds = await feedsCollection.find({}).toArray();
-    logger.info("Raw data from MongoDB:", feeds);
     logger.info(`${feeds.length} feeds found in MongoDB`);
 
     if (feeds.length > 0) {
-      // Insert each feed into SQLite
-      for (const feed of feeds) {
-        const createdAt = feed.createdAt
-          ? feed.createdAt.toISOString()
-          : new Date().toISOString();
+      // Utiliser une transaction pour les insertions
+      sqliteDb.transaction(() => {
+        for (const feed of feeds) {
+          const createdAt = feed.createdAt
+            ? feed.createdAt.toISOString()
+            : new Date().toISOString();
 
-        sqliteDb.run(
-          "INSERT INTO feeds (link, created_at) VALUES (?, ?)",
-          [
-            feed.link.toString(),
-            createdAt
-          ]
-        );
-        logger.info(`Feed inserted: ${feed.link}`);
-      }
+          sqliteDb.run(
+            "INSERT INTO feeds (link, created_at) VALUES (?, ?)",
+            [feed.link.toString(), createdAt]
+          );
+          logger.info(`Feed inserted: ${feed.link}`);
+        }
+      })();
     }
 
     logger.info("Migration completed successfully");
