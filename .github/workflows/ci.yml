@@ -29,14 +29,13 @@ jobs:
       - name: Type check
         run: bun run tsc --noEmit
 
-  security:
+  renovate:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: Run Snyk to check for vulnerabilities
-        uses: snyk/actions/node@master
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      - name: Renovate Bot
+        uses: renovatebot/github-action@v39.1.4
         with:
-          args: --severity-threshold=high
+          token: ${{ secrets.GITHUB_TOKEN }}
+          configurationFile: .github/renovate.json
