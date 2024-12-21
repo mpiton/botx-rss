@@ -1,0 +1,15 @@
+{
+    "compilerOptions": {
+      "target": "esnext",
+      "module": "esnext",
+      "moduleResolution": "bundler",
+      "types": ["bun-types"],
+      "esModuleInterop": true,
+      "skipLibCheck": true,
+      "strict": true,
+      "baseUrl": ".",
+      "paths": {
+        "@/*": ["src/*"]
+      }
+    }
+}
