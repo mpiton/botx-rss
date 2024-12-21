@@ -7,7 +7,9 @@
         "start": "bun run src/index.ts",
         "dev": "bun --watch src/index.ts",
         "test": "bun test",
-        "test:watch": "bun test --watch"
+        "test:watch": "bun test --watch",
+        "start:prod": "pm2 start ecosystem.config.js --env production",
+        "migrate": "bun run src/scripts/migrate.ts"
     },
     "devDependencies": {
         "@types/bun": "1.1.14",
