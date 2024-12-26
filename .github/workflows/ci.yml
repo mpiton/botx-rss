@@ -22,7 +22,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Setup Bun
-        uses: oven-sh/setup-bun@5a6df720540c20d95d530d3fd6885511223d5d20
+        uses: oven-sh/setup-bun@v1
         with:
           bun-version: latest
 
@@ -46,7 +46,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Renovate Bot
-        uses: renovatebot/github-action@aadd5b68a06716e8f29cdc848de90ff6c1dd62e1 #47.0.7
+        uses: renovatebot/github-action@v41.0.7
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           configurationFile: .github/renovate.json
